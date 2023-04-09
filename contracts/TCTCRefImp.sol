@@ -10,9 +10,10 @@ contract MyToken is TCTC {
     constructor (uint256 _version) TCTC(
         "MyToken",
         "MTK",
-        0xf8e81D47203A594245E36C48e151709F0C19fBe8, // ContractID of the token minter must have. Need to be modfied
-        0xf8e81D47203A594245E36C48e151709F0C19fBe8, // ContractID of the token holder must have. Need to be modfied
-        0xf8e81D47203A594245E36C48e151709F0C19fBe8  // ContractID of the token burner must have. Need to be modfied
+        // See the contract (ERC5679RefImpl.sol) deployed in the Goerli Testnet
+        0x8965b739df91eb621d9ff06af4a48198f711bbd9, // ContractID of the token minter must have. Need to be modfied
+        0x8965b739df91eb621d9ff06af4a48198f711bbd9, // ContractID of the token holder must have. Need to be modfied
+        0x8965b739df91eb621d9ff06af4a48198f711bbd9  // ContractID of the token burner must have. Need to be modfied
     ) {
         emit ErcRefImplDeploy(_version, "MyToken", "<tbd>");
     }
