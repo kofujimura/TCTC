@@ -1,9 +1,9 @@
-# TCTC Sample
-Token-Controlled Token Circulation (TCTC) is the concept of a general-purpose token circulating system for circulating various types of rights such
+# Token-Controlled Token Circulation (TCTC)
+This is the concept of a general-purpose token circulating system for circulating various types of rights such
 as tickets, vouchers, coupons, and licenses as tokens on the blockchain. The circulation of tokens comprises four types
-of principal transactions: issuance, transfer, present, and consumption. Depending on the application, various conditions
-must be satisfied to execute these transactions, e.g., only qualified shops can issue the tokens and only a certain agent
-can transfer the tokens. The token circulating system issues, transfers, presents, or consumes a token only if the control
+of principal transactions: mint, transfer, and burn. Depending on the application, various conditions
+must be satisfied to execute these transactions, e.g., only qualified shops can mint the tokens and only a certain agent
+can transfer the tokens. The token circulating system mints, transfers, or burns a token only if the control
 tokens are owned by the participants of the transaction. The circulation control tokens themselves can be any type of
 token, e.g., a driver's license or a membership certificate of a certain group, and recursively circulated in the token
 circulating system. This scheme eliminates the need to write complex circulation control in smart contracts for each
