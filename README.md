@@ -1,6 +1,6 @@
 # Token-Controlled Token Circulation (TCTC)
 This is the concept of a general-purpose token circulating system for circulating various types of rights such
-as tickets, vouchers, coupons, and licenses as tokens on the blockchain. The circulation of tokens comprises four types
+as tickets, vouchers, coupons, and licenses as tokens on the blockchain. The circulation of tokens comprises three types
 of principal transactions: mint, transfer, and burn. Depending on the application, various conditions
 must be satisfied to execute these transactions, e.g., only qualified shops can mint the tokens and only a certain agent
 can transfer the tokens. The token circulating system mints, transfers, or burns a token only if the control
