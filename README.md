@@ -11,7 +11,7 @@ application, improving the security of the system and reducing development costs
 circulation was already presented in a paper by the authors in 1999, but with the spread of modern smart contracts and
 token wallets, it has become a practical and feasible technology.
 
-## Reference Implementation of Goerli Testnet
+## Reference Implementation
 https://goerli.etherscan.io/address/0x6223bbebe1352cdf951705a7dbd460a93272331f#code
 
 ## Source Code on Remix
