@@ -12,10 +12,10 @@ circulation was already presented in a paper by the authors in 1999, but with th
 token wallets, it has become a practical and feasible technology.
 
 ## Reference Implementation
-https://goerli.etherscan.io/address/0x6223bbebe1352cdf951705a7dbd460a93272331f#code
+https://goerli.etherscan.io/address/0x0324a7b0b5f984a15fb6b2df20118c22624168e8#code
 
 ## Source Code on Remix
-https://remix.ethereum.org/address/0x6223BBeBE1352cdF951705A7dBD460A93272331F
+https://remix.ethereum.org/address/0x0324A7b0B5F984a15Fb6B2DF20118C22624168E8
 
 ## White Paper
 https://ssrn.com/abstract=4297719
