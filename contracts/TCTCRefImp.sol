@@ -81,7 +81,7 @@ contract TCTCRefImpl is TokenController, ERC5679Ext721, ERC721 {
         address _from,
         uint256 _id,
         bytes calldata // _data (unused)
-    ) external override onlyHasToken(HOLDER_ROLE, _msgSender()) onlyHasToken(HOLDER_ROLE, _from) {
+    ) external override onlyHasToken(BURNER_ROLE, _msgSender()) onlyHasToken(HOLDER_ROLE, _from) {
         // Depends on applicaton whether
         // require(_isApprovedOrOwner(_msgSender(), _id), "TCTC: caller is not token owner or approved");
         _burn(_id); // ignoring _data in this simple reference implementation.
