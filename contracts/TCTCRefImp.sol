@@ -21,11 +21,11 @@ contract TCTCRefImpl is TokenController, ERC5679Ext721, ERC721 {
         "TCT"
     ) {
         // ContractID of the token minter must have. Need to be modfied
-        _grantRoleToken(MINTER_ROLE, 0x8965B739DF91eB621D9FF06af4A48198f711BbD9);
+        _grantRoleByToken(MINTER_ROLE, 0x8965B739DF91eB621D9FF06af4A48198f711BbD9);
         // ContractID of the token minter must have. Need to be modfied
-        _grantRoleToken(HOLDER_ROLE, 0x8965B739DF91eB621D9FF06af4A48198f711BbD9);
+        _grantRoleByToken(HOLDER_ROLE, 0x8965B739DF91eB621D9FF06af4A48198f711BbD9);
         // ContractID of the token burner must have. Need to be modfied
-        _grantRoleToken(BURNER_ROLE, 0x8965B739DF91eB621D9FF06af4A48198f711BbD9);
+        _grantRoleByToken(BURNER_ROLE, 0x8965B739DF91eB621D9FF06af4A48198f711BbD9);
  
         emit ErcRefImplDeploy(_version, "TCTCRefImpl", "https://github.com/kofujimura/TCTC");
     }
