@@ -11,11 +11,22 @@ application, improving the security of the system and reducing development costs
 circulation was already presented in a paper by the authors in 1999, but with the spread of modern smart contracts and
 token wallets, it has become a practical and feasible technology.
 
-## Reference Implementation
-https://goerli.etherscan.io/address/0x0324a7b0b5f984a15fb6b2df20118c22624168e8#code
+## Reference Implementation on "plain" OpenZeppelin.
 
-## Source Code on Remix
-https://remix.ethereum.org/address/0x0324A7b0B5F984a15Fb6B2DF20118C22624168E8
+### Code on Goerli testnet.
+https://goerli.etherscan.io/address/0xd44ea7db0a1690d8784bb9cdab7d420b94a29c21#code
+
+### Source Code on Remix
+https://remix.ethereum.org/address/0xd44Ea7Db0a1690D8784BB9CDaB7d420b94A29C21
+
+
+## Reference Implementation on ERC5679
+
+### Code on Goerli testnet.
+https://goerli.etherscan.io/address/0x647a3b5b039c9fe13df5d81e8b65063572ac655c#code
+
+### Source Code on Remix
+https://remix.ethereum.org/address/0x647A3b5B039C9Fe13df5d81E8b65063572Ac655c
 
 ## White Paper
 https://ssrn.com/abstract=4297719
