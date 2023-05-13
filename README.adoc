@@ -6,8 +6,11 @@ The circulation of tokens comprises three types of principal transactions: mint,
 [[using-token-controller]]
 === Using `TokenController`
 
-Token-controller contracts provides xref:api:access.adoc#AccessControl[`AccessControl`] for implementing TCTC. Its usage is straightforward: for each role that you want to define,
-you will create a new _role identifier_ that is used to grant, revoke, and check if an account has that role.
+TokenController is another contract that provides xref:api:access.adoc#Roles[`Roles`] for implementing role-based access control. 
+
+Its usage is straightforward: for each role that you want to define, you will create a new _role identifier_ that is used to grant, revoke, and check if an account has that role. 
+
+For each role, tokenController has the mapping of contract IDs, which will hold the list of contracts the participant must own with that role. When _grantRoleToken() is called multiple times, it requires to have the token specified by at least one of the contract IDs. 
 
 Here's a simple example of using `TokenController` in an xref:tokens.adoc#ERC721[`ERC721` token] to define a 'minter' and 'burner' role, which allows accounts that have it create new tokens and destroy existing tokens by specifying the controll token:
 
@@ -50,7 +53,24 @@ contract MyToken is ERC721, TokenController {
 [[granting-and-revoking]]
 === Granting and Revoking Roles
 
-This example above uses `_grantRoleByToken`, an `internal` function that is useful when programmatically assigning roles (such as during construction). But what if we later want to grant the 'minter' role to additional accounts?
+This example above uses `_grantRoleByToken`, an `internal` function that is useful when programmatically assigning roles (such as during construction). But what if we later want to grant the 'minter' role to additional accounts? To grant and revoke roles dynamically, you will need help from the the issuer of the control tokens specified. Detail of this scheme see the white paper.
 
-To grant and revoke roles dynamically, you will need help from the the issuer of the control tokens specified.
+== Reference Implementation on "plain" OpenZeppelin.
 
+=== Code on Goerli testnet.
+https://goerli.etherscan.io/address/0xd44ea7db0a1690d8784bb9cdab7d420b94a29c21#code
+
+=== Source Code on Remix
+https://remix.ethereum.org/address/0xd44Ea7Db0a1690D8784BB9CDaB7d420b94A29C21
+
+
+== Reference Implementation on ERC5679
+
+=== Code on Goerli testnet.
+https://goerli.etherscan.io/address/0x647a3b5b039c9fe13df5d81e8b65063572ac655c#code
+
+=== Source Code on Remix
+https://remix.ethereum.org/address/0x647A3b5B039C9Fe13df5d81E8b65063572Ac655c
+
+== White Paper
+https://ssrn.com/abstract=4297719
