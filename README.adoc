@@ -53,7 +53,7 @@ contract MyToken is ERC721, TokenController {
 [[granting-and-revoking]]
 === Granting and Revoking Roles
 
-This example above uses `_grantRoleByToken`, an `internal` function that is useful when programmatically assigning roles (such as during construction). But what if we later want to grant the 'minter' role to additional accounts? To grant and revoke roles dynamically, you will need help from the issuer of the control tokens specified and get the required control token. Detail of this scheme see the white paper below.
+This example above uses `_grantRoleByToken`, an `internal` function that is useful when programmatically assigning roles (such as during construction). However, granting the 'minter' or 'burner' role to the actual user account is independent of this contract generation. For example, for a user to obtain mint privileges, they must obtain the requested control token from the specified control token issuer. For more information on this scheme, please refer to the https://ssrn.com/abstract=4297719[white paper].
 
 == Reference Implementation on "plain" OpenZeppelin.
 
