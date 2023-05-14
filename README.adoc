@@ -8,9 +8,7 @@ The circulation of tokens comprises three types of principal transactions: mint,
 
 TokenController is another contract that provides xref:api:access.adoc#Roles[`Roles`] for implementing role-based access control. 
 
-Its usage is straightforward: for each role that you want to define, you will create a new _role identifier_ that is used to grant, revoke, and check if an account has that role. 
-
-For each role, tokenController has the mapping of contract IDs, which will hold the list of contracts the participant must own with that role. When _grantRoleToken() is called multiple times, it requires to have a token of at least one of the contract IDs specified by the interface. 
+Its usage is straightforward: for each role that you want to define, you will create a new _role identifier_ that is used to grant, revoke, and check if an account has that role. For each role, tokenController has the mapping of contract IDs, which will hold the list of contracts the participant must own with that role. When _grantRoleByToken() is called multiple times, it requires to have a token of at least one of the contract IDs specified by the interface. 
 
 Here's a simple example of using `TokenController` in an xref:tokens.adoc#ERC721[`ERC721` token] to define a 'minter' and 'burner' role, which allows accounts that have it create new tokens and destroy existing tokens by specifying the controll token:
 
