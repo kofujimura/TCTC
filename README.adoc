@@ -1,5 +1,3 @@
-ifndef::imagesdir[:imagesdir:images]
-
 [[token-controlled-token-circulation]]
 == Token-Controlled Token Circulation (TCTC)
 
@@ -55,7 +53,7 @@ contract MyToken is ERC721, TokenController {
 
 This example above uses `_grantRoleByToken`, an `internal` function that is useful when programmatically assigning roles (such as during construction). However, granting the 'minter' or 'burner' role to the actual user account is independent of this contract generation. For example, for a user to obtain mint privileges, they must obtain the requested control token from the specified control token issuer. 
 
-image::MetaMask-MinterCert.png[]
+image::images/MetaMask-MinterCert.png[Mint privilege in MetaMask]
 
 For more information on this scheme, please refer to the https://ssrn.com/abstract=4297719[white paper].
 
