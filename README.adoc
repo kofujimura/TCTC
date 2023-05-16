@@ -1,3 +1,5 @@
+ifndef::imagesdir[:imagesdir:images]
+
 [[token-controlled-token-circulation]]
 == Token-Controlled Token Circulation (TCTC)
 
@@ -51,7 +53,11 @@ contract MyToken is ERC721, TokenController {
 [[granting-and-revoking]]
 === Granting and Revoking Roles
 
-This example above uses `_grantRoleByToken`, an `internal` function that is useful when programmatically assigning roles (such as during construction). However, granting the 'minter' or 'burner' role to the actual user account is independent of this contract generation. For example, for a user to obtain mint privileges, they must obtain the requested control token from the specified control token issuer. For more information on this scheme, please refer to the https://ssrn.com/abstract=4297719[white paper].
+This example above uses `_grantRoleByToken`, an `internal` function that is useful when programmatically assigning roles (such as during construction). However, granting the 'minter' or 'burner' role to the actual user account is independent of this contract generation. For example, for a user to obtain mint privileges, they must obtain the requested control token from the specified control token issuer. 
+
+image::MetaMask-MinterCert.png[]
+
+For more information on this scheme, please refer to the https://ssrn.com/abstract=4297719[white paper].
 
 == Reference Implementation on "plain" OpenZeppelin.
 
