@@ -51,7 +51,7 @@ contract MyToken is ERC721, TokenController {
 [[granting-and-revoking]]
 === Granting and Revoking Roles
 
-This example above uses `_grantRoleByToken`, an `internal` function that is useful when programmatically assigning roles (such as during construction). However, granting the 'minter' or 'burner' role to the actual user account is independent of this contract generation. For example, for a user to obtain minter role, they must obtain the required control token from the specified control token issuer. The following is the case where minter role is assigned to the issuer of MyToken as a token called Minter Cert. Similarly, a minter role can be revoked by burning a minter cert by the issuer of the Minter Cert.
+This example above uses `_grantRoleByToken`, an `internal` function that is useful when programmatically assigning roles (such as during construction). However, granting the 'minter' or 'burner' role to the actual user account is independent of this contract generation. For example, for a user to obtain minter role, they must obtain the required control token from the specified control token issuer. The following is the case where minter role is assigned to the issuer of MyToken as a token called Minter Cert. Similarly, a minter role can be revoked by burning the Minter Cert by the issuer.
 
 image::images/MetaMask-MinterCert.png[Mint privilege in MetaMask, 50%]
 
