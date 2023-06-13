@@ -1,7 +1,9 @@
 [[token-controlled-token-circulation]]
 == Token-Controlled Token Circulation (TCTC)
 
-The circulation of tokens comprises three types of principal transactions: mint, transfer, and burn. Depending on the application, various conditions must be satisfied to execute these transactions, e.g., only qualified shops can mint the tokens and only a certain agent can transfer the tokens. We propose to use the tokens themselves to control these permissions. The system mints, transfers, or burns a token only if the control tokens are owned by the participants of the transaction. The circulation control tokens themselves can be any type of token, e.g., a driver's license or a membership certificate of a certain group, and recursively circulated in the token circulating system. This scheme eliminates the need to write complex circulation control in smart contracts for each application, improving the security of the system and reducing development costs.
+The circulation of tokens involves three main types of transactions: minting, transferring, and burning. Various conditions must be met to execute these transactions depending on the application; for instance, only certified stores can mint tokens, and only specific agents can transfer them. We suggest using the tokens themselves to regulate these permissions. The system will mint, transfer, or burn a token only if the controlling tokens are owned by the transaction participants. These circulation control tokens could be any type of token, such as a driver's license or a group membership certificate, and can be circulated recursively within the token circulation system.
+
+In a traditional system, achieving such access control requires an off-chain management tool to grant or revoke necessary roles through the interface specified in the ERC-5982 role-based access control. However, representing such a role as a token eliminates the need for developing off-chain tools, potentially enhancing system security and reducing development costs.
 
 [[using-token-controller]]
 === Using `TokenController`
