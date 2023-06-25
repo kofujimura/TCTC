@@ -62,11 +62,10 @@ For more information on this scheme, please refer to the https://ssrn.com/abstra
 == Reference Implementation on "plain" OpenZeppelin.
 
 === Code on Goerli testnet.
-https://goerli.etherscan.io/address/0xd44ea7db0a1690d8784bb9cdab7d420b94a29c21#code
+https://goerli.etherscan.io/address/0x541a5e218fc311edf1ea298ec7eb05901434cf20#code
 
 === Source Code on Remix
-https://remix.ethereum.org/address/0xd44Ea7Db0a1690D8784BB9CDaB7d420b94A29C21
-
+https://remix.ethereum.org/address/0x541a5E218fC311EdF1Ea298Ec7EB05901434cF20
 
 == Reference Implementation on ERC5679
 
