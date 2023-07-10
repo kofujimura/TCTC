@@ -5,6 +5,27 @@ The circulation of tokens involves three main types of transactions: minting, tr
 
 In a traditional system, achieving such access control requires an off-chain management tool to grant or revoke necessary roles through the interface specified in the ERC-5982 role-based access control. However, representing such a role as a token eliminates the need for developing off-chain tools, potentially enhancing system security and reducing development costs.
 
+[[use-cases]]
+=== Use cases
+
+Access control, which determines who can execute specific functions, is very important in the context of smart contracts. Therefore, the use cases for TCTC are broad and not limited to the following, but I would like to show some typical examples.
+
+This is the simplest case. Let's consider a situation where a company wants to distribute MyToken to their customers. MyToken can be any token, but I assume that this is the ticket to watch some content at some content delivery server. If the company has several branch offices, the headquarters may want to grant minting privileges to these branches. This can be achieved by issuing a minter certificate, in the form of a control token, to each branch office. The branch office then mints tokens, in this case, MyToken, and distributes them to their customers via their own website. 
+
+image::images/usecase1.png[Use case1: Mint Permission, 75%]
+
+Next, we have an example of using transfer permission. Let's consider a similar situation where a company wants to distribute MyToken to their customers, as in the previous use case. However, in this scenario, the number of tokens minted must be controlled by the headquarters. The headquarters may not want to grant minting privileges to the branches. Instead, transfer privileges are granted to these branches. 
+
+Depending on the business model, we can thus flexibly control the circulation of tokens. By the way, if no one is granted transfer permission, this token becomes a non-transferable token. In this forum, we have discussed soulbound or non-transferable tokens; this is another option for implementation."
+
+image::images/usecase2.png[Use case2: Transfer Permission, 75%]
+
+Many applications require address verification to prevent errors in the recipient's address when minting or transferring target tokens. An address certificate or holder certificate is useful in such situations. It is issued as proof of address verification to users before conducting transactions for target tokens. Typically, this certificate may be issued by a government agency or specific company after an identity verification process.
+
+This address certificate is then required by the recipient when a minting or transfer transaction is executed, thereby preventing misdeliveries.
+
+image::images/usecase3.png[Use case3: Address Verification, 75%]
+
 [[using-token-controller]]
 === Using `TokenController`
 
@@ -53,31 +74,7 @@ contract MyToken is ERC721, TokenController {
 [[granting-and-revoking]]
 === Granting and Revoking Roles
 
-This example above uses `_grantRoleByToken`, an `internal` function that is useful when programmatically assigning roles (such as during construction). However, granting the 'minter' or 'burner' role to the actual user account is independent of this contract generation. For example, for a user to obtain minter role, they must obtain the required control token from the specified control token issuer. 
-
-The following is the case where minter role is assigned to the issuer of MyToken as a token called Minter Cert. Similarly, a minter role can be revoked by burning the Minter Cert by the issuer.
-
-
-[[use-cases]]
-=== Use cases
-
-Access control, which determines who can execute specific functions, is very important in the context of smart contracts. Therefore, the use cases for TCTC are broad and not limited to the following, but I would like to show some typical examples.
-
-This is the simplest case. Let's consider a situation where a company wants to distribute MyToken to their customers. MyToken can be any token, but I assume that this is the ticket to watch some content at some content delivery server. If the company has several branch offices, the headquarters may want to grant minting privileges to these branches. This can be achieved by issuing a minter certificate, in the form of a control token, to each branch office. The branch office then mints tokens, in this case, MyToken, and distributes them to their customers via their own website. 
-
-image::images/usecase1.png[Use case1: Mint Permission, 50%]
-
-Next, we have an example of using transfer permission. Let's consider a similar situation where a company wants to distribute MyToken to their customers, as in the previous use case. However, in this scenario, the number of tokens minted must be controlled by the headquarters. The headquarters may not want to grant minting privileges to the branches. Instead, transfer privileges are granted to these branches. 
-
-Depending on the business model, we can thus flexibly control the circulation of tokens. By the way, if no one is granted transfer permission, this token becomes a non-transferable token. In this forum, we have discussed soulbound or non-transferable tokens; this is another option for implementation."
-
-image::images/usecase2.png[Use case2: Transfer Permission, 50%]
-
-Many applications require address verification to prevent errors in the recipient's address when minting or transferring target tokens. An address certificate or holder certificate is useful in such situations. It is issued as proof of address verification to users before conducting transactions for target tokens. Typically, this certificate may be issued by a government agency or specific company after an identity verification process.
-
-This address certificate is then required by the recipient when a minting or transfer transaction is executed, thereby preventing misdeliveries.
-
-image::images/usecase3.png[Use case3: Address Verification, 50%]
+This example above uses `_grantRoleByToken`, an `internal` function that is useful when programmatically assigning roles (such as during construction). However, granting the 'minter' or 'burner' role to the actual user account is independent of this contract generation. For example, for a user to obtain minter role, they must obtain the required control token from the specified control token issuer. The following is the case where minter role is assigned to the issuer of MyToken as a token called Minter Cert. Similarly, a minter role can be revoked by burning the Minter Cert by the issuer.
 
 For more information on this scheme, please refer to the https://ssrn.com/abstract=4297719[white paper].
 
