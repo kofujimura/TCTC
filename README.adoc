@@ -39,7 +39,7 @@ TokenController is another contract that provides xref:api:access.adoc#Roles[`Ro
 
 Its usage is straightforward: for each role that you want to define, you will create a new _role identifier_ that is used to grant, revoke, and check if an account has that role. For each role, tokenController has the mapping of contract IDs, which will hold the list of contracts of the token the participant must own with that role. When _grantRoleByToken() is called multiple times, it requires to have a token of at least one of the contract IDs specified by the interface. 
 
-Here's a simple example of using `TokenController` in an xref:tokens.adoc#ERC721[`ERC721` token] to define a 'minter' and 'burner' role, which allows accounts that have it create new tokens and destroy existing tokens by specifying the controll token:
+Here's a simple example of using `TokenController` in an xref:tokens.adoc#ERC721[`ERC-721`] token to define a 'minter' and 'burner' role, which allows accounts that have it create new tokens and destroy existing tokens by specifying the controll token:
 
 [source,solidity]
 ----
@@ -99,7 +99,6 @@ https://goerli.etherscan.io/address/0x647a3b5b039c9fe13df5d81e8b65063572ac655c#c
 https://remix.ethereum.org/address/0x647A3b5B039C9Fe13df5d81E8b65063572Ac655c
 
 == References
-White Paper:
-https://ssrn.com/abstract=4297719
-Original concept source (1999):
-http://www.usenix.org/events/sec99/full_papers/fujimura/fujimura.pdf
+White Paper: https://ssrn.com/abstract=4297719
+
+Original concept source (1999): http://www.usenix.org/events/sec99/full_papers/fujimura/fujimura.pdf
