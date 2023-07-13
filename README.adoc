@@ -1,8 +1,8 @@
 [[token-controlled-token-circulation]]
 == Token-Controlled Token Circulation (TCTC)
 
-*Note: TCTC has currently submitted a pull request to the ERC repository as ERC-7303 and is under review.*
-PR (https://github.com/ethereum/EIPs/pull/7303)
+*Note: The specification of TCTC has currently submitted a pull request to the ERC repository as ERC-7303 and is under review
+(https://github.com/ethereum/EIPs/pull/7303).  This is additional documentation of TCTC.*
 
 The circulation of tokens involves three main types of transactions: minting, transferring, and burning. Various conditions must be met to execute these transactions depending on the application; for instance, only certified stores can mint tokens, and only specific agents can transfer them. We suggest using the tokens themselves to regulate these permissions. The system will mint, transfer, or burn a token only if the controlling tokens are owned by the transaction participants. These circulation control tokens could be any type of token, such as a driver's license or a group membership certificate, and can be circulated recursively within the token circulation system.
 
@@ -80,7 +80,7 @@ contract MyToken is ERC721, TokenController {
 [[granting-and-revoking]]
 === Granting and Revoking Roles
 
-This example above uses `_grantRoleByToken`, an `internal` function that is useful when programmatically assigning roles (such as during construction). However, granting the 'minter' or 'burner' role to the actual user account is independent of this contract generation. For example, for a user to obtain minter role, they must obtain the required control token from the specified control token issuer. The following is the case where minter role is assigned to the issuer of MyToken as a token called Minter Cert. Similarly, a minter role can be revoked by burning the Minter Cert by the issuer.
+This example above uses `_grantRoleByToken`, an `internal` function that is useful when programmatically assigning roles (such as during construction). However, granting the 'minter' or 'burner' role to the actual user account is independent of this contract generation. For example, for a user to obtain minter role, they must obtain the required control token from the specified control token issuer. In the use case above, minter role is assigned to the issuer of MyToken as a token called Minter Cert. Similarly, a minter role can be revoked by burning the Minter Cert by the issuer.
 
 == Reference Implementation on "plain" OpenZeppelin.
 
@@ -98,5 +98,8 @@ https://goerli.etherscan.io/address/0x647a3b5b039c9fe13df5d81e8b65063572ac655c#c
 === Source Code on Remix
 https://remix.ethereum.org/address/0x647A3b5B039C9Fe13df5d81E8b65063572Ac655c
 
-== White Paper
+== References
+White Paper:
 https://ssrn.com/abstract=4297719
+Original concept source (1999):
+http://www.usenix.org/events/sec99/full_papers/fujimura/fujimura.pdf
