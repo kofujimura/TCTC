@@ -10,7 +10,7 @@ import "./TokenController.sol";
 
 contract MyToken is ERC721, ERC721URIStorage, TokenController {
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
-    bytes32 public constant BURNER_ROLE = keccak256("HOLDER_ROLE");
+    bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
 
     constructor() ERC721("MyToken", "MTK") {
         // Specifies the deployed contract ID of the control token.
