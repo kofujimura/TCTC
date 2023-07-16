@@ -35,7 +35,7 @@ image::images/usecase3.png[Use case3: Address Verification, 100%]
 [[using-token-controller]]
 === Using `TokenController`
 
-TokenController is another contract that provides xref:api:access.adoc#Roles[`Roles`] for implementing role-based access control. 
+link:contracts/TokenController.sol[TokenController.sol] is the contract that provides xref:api:access.adoc#Roles[`Roles`] for implementing role-based access control.
 
 Its usage is straightforward: for each role that you want to define, you will create a new _role identifier_ that is used to grant, revoke, and check if an account has that role. For each role, tokenController has the mapping of contract IDs, which will hold the list of contracts of the token the participant must own with that role. When _grantRoleByToken() is called multiple times, it requires to have a token of at least one of the contract IDs specified by the interface. 
 
