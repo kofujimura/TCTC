@@ -7,7 +7,7 @@ pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 import "./ERC5679.sol";
-import "./TokenController.sol";
+import "./ERC7303.sol";
 
 contract TCTCRefImpl is TokenController, ERC5679Ext721, ERC721 {
     event ErcRefImplDeploy(uint256 version, string name, string url);
