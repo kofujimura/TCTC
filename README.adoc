@@ -33,9 +33,9 @@ This address certificate is then required by the recipient when a minting or tra
 image::images/usecase3.png[Use case3: Address Verification, 100%]
 
 [[using-token-controller]]
-=== Using `TokenController`
+=== Using `ERC7303`
 
-link:contracts/TokenController.sol[TokenController.sol] is the contract that provides xref:api:access.adoc#Roles[`Roles`] for implementing role-based access control.
+link:contracts/ERC7303.sol[ERC7303.sol] is the contract that provides xref:api:access.adoc#Roles[`Roles`] for implementing role-based access control.
 
 Its usage is straightforward: for each role that you want to define, you will create a new _role identifier_ that is used to grant, revoke, and check if an account has that role. For each role, tokenController has the mapping of contract IDs, which will hold the list of contracts of the token the participant must own with that role. When _grantRoleByToken() is called multiple times, it requires to have a token of at least one of the contract IDs specified by the interface. 
 
@@ -50,7 +50,7 @@ pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "./TokenController.sol";
+import "./ERC7303.sol";
 
 contract MyToken is ERC721, TokenController {
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
@@ -85,12 +85,13 @@ This example above uses `_grantRoleByToken`, an `internal` function that is usef
 == Reference Implementation on "plain" OpenZeppelin.
 
 === Code on Goerli testnet.
-https://goerli.etherscan.io/address/0x541a5e218fc311edf1ea298ec7eb05901434cf20#code
+https://goerli.etherscan.io/address/0xaF73B348998BC0ff6e143883c37e4Ad118100fe1#code
 
 === Source Code on Remix
-https://remix.ethereum.org/address/0x541a5E218fC311EdF1Ea298Ec7EB05901434cF20
+https://remix.ethereum.org/address/0xaF73B348998BC0ff6e143883c37e4Ad118100fe1
 
 == Reference Implementation on ERC5679
+<< Outdated >>
 
 === Code on Goerli testnet.
 https://goerli.etherscan.io/address/0x647a3b5b039c9fe13df5d81e8b65063572ac655c#code
