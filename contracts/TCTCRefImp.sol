@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "./ERC5679.sol";
 import "./ERC7303.sol";
 
-contract TCTCRefImpl is TokenController, ERC5679Ext721, ERC721 {
+contract TCTCRefImpl is ERC7303, ERC5679Ext721, ERC721 {
     event ErcRefImplDeploy(uint256 version, string name, string url);
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
