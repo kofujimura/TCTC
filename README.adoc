@@ -33,13 +33,13 @@ This address certificate is then required by the recipient when a minting or tra
 image::images/usecase3.png[Use case3: Address Verification, 100%]
 
 [[using-token-controller]]
-=== Using `ERC7303`
+=== Using `ERC-7303`
 
 link:contracts/ERC7303.sol[ERC7303.sol] is the contract that provides xref:api:access.adoc#Roles[`Roles`] for implementing role-based access control.
 
-Its usage is straightforward: for each role that you want to define, you will create a new _role identifier_ that is used to grant, revoke, and check if an account has that role. For each role, tokenController has the mapping of contract IDs, which will hold the list of contracts of the token the participant must own with that role. When _grantRoleByToken() is called multiple times, it requires to have a token of at least one of the contract IDs specified by the interface. 
+Its usage is straightforward: for each role that you want to define, you will create a new _role identifier_ that is used to grant, revoke, and check if an account has that role. For each role, ERC-7303 has the mapping of contract IDs, which will hold the list of contracts of the token the participant must own with that role. When _grantRoleByToken() is called multiple times, it requires to have a token of at least one of the contract IDs specified by the interface. 
 
-Here's a simple example of using `TokenController` in an xref:tokens.adoc#ERC721[`ERC-721`] token to define a 'minter' and 'burner' role, which allows accounts that have it create new tokens and destroy existing tokens by specifying the controll token:
+Here's a simple example of using `ERC-7303` in an xref:tokens.adoc#ERC721[`ERC-721`] token to define a 'minter' and 'burner' role, which allows accounts that have it create new tokens and destroy existing tokens by specifying the controll token:
 
 [source,solidity]
 ----
@@ -52,7 +52,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "./ERC7303.sol";
 
-contract MyToken is ERC721, TokenController {
+contract MyToken is ERC721, ERC7303 {
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
 
