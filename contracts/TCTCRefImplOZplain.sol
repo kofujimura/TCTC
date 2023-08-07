@@ -15,8 +15,10 @@ contract MyToken is ERC721, ERC721URIStorage, ERC7303 {
     constructor() ERC721("MyToken", "MTK") {
         // Specifies the deployed contract ID of the control token.
         // This sample contract is deployed on Goerli.
-        _grantRoleByToken(MINTER_ROLE, 0xF1e33c646a12F68bC8015b4AED29BB316fA2D593);
-        _grantRoleByToken(BURNER_ROLE, 0xcDc6fD5F29E2641f25c90235eDA984f99aA3a1DD);
+        _grantRoleByERC721Token(MINTER_ROLE, 0xF1e33c646a12F68bC8015b4AED29BB316fA2D593);
+        _grantRoleByERC721Token(BURNER_ROLE, 0xcDc6fD5F29E2641f25c90235eDA984f99aA3a1DD);
+        _grantRoleByERC1155Token(MINTER_ROLE, 0x11d43325044f7f06727cb374aE78C3A3494F4b26, 1);  // TypeID = 1
+        _grantRoleByERC1155Token(BURNER_ROLE, 0x11d43325044f7f06727cb374aE78C3A3494F4b26, 2);  // TypeID = 2
     }
 
     function _baseURI() internal pure override returns (string memory) {
@@ -49,4 +51,14 @@ contract MyToken is ERC721, ERC721URIStorage, ERC7303 {
     {
         return super.tokenURI(tokenId);
     }
+
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        override(ERC721, ERC721URIStorage)
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
+    }
+
 }
