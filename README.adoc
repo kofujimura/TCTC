@@ -1,8 +1,7 @@
 [[token-controlled-token-circulation]]
 == Token-Controlled Token Circulation (TCTC)
 
-*Note: The specification of TCTC has currently submitted a pull request to the ERC repository as ERC-7303 and is under review
-(https://github.com/ethereum/EIPs/pull/7303).  This is additional documentation of TCTC.*
+*Note: The specification of TCTC is published as ERC-7303(https://eips.ethereum.org/EIPS/eip-7303). This is additional documentation of TCTC.*
 
 The circulation of tokens involves three main types of transactions: minting, transferring, and burning. Various conditions must be met to execute these transactions depending on the application; for instance, only certified stores can mint tokens, and only specific agents can transfer them. We suggest using the tokens themselves to regulate these permissions. The system will mint, transfer, or burn a token only if the controlling tokens are owned by the transaction participants. These circulation control tokens could be any type of token, such as a driver's license or a group membership certificate, and can be circulated recursively within the token circulation system.
 
@@ -120,7 +119,7 @@ This example above uses `_grantRoleByToken`, an `internal` function that is usef
 https://goerli.etherscan.io/address/0x9107607dff15de01fb831b8792f50812602dd544#code
 
 == Reference Implementation on ERC5679
-<< Outdated >>
+<< to be updated for updated version of ERC-7303 >>
 
 === Code on Goerli testnet.
 https://goerli.etherscan.io/address/0x647a3b5b039c9fe13df5d81e8b65063572ac655c#code
