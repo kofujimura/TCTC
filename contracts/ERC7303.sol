@@ -29,7 +29,7 @@ abstract contract ERC7303 {
      * @param role byte32 The role which you want to grant.
      * @param contractId address The address of contractId of which token the user required to own.
      */
-    function _grantRoleByERC721Token(bytes32 role, address contractId) internal {
+    function _grantRoleByERC721(bytes32 role, address contractId) internal {
         require(
             IERC165(contractId).supportsInterface(type(IERC721).interfaceId),
             "ERC7303: provided contract does not support ERC721 interface"
@@ -44,7 +44,7 @@ abstract contract ERC7303 {
      * @param contractId address The address of contractId of which token the user required to own.
      * @param typeId uint256 The token type id that the user required to own.
      */
-    function _grantRoleByERC1155Token(bytes32 role, address contractId, uint256 typeId) internal {
+    function _grantRoleByERC1155(bytes32 role, address contractId, uint256 typeId) internal {
         require(
             IERC165(contractId).supportsInterface(type(IERC1155).interfaceId),
             "ERC7303: provided contract does not support ERC1155 interface"
