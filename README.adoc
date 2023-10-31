@@ -44,7 +44,7 @@ Here's a simple example of using `ERC-7303` in an xref:tokens.adoc#ERC721[`ERC-7
 ----
 // SPDX-License-Identifier: Apache-2.0
 
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
@@ -64,7 +64,7 @@ contract MyToken is ERC721, ERC7303 {
         _grantRoleByERC1155(BURNER_ROLE, 0x..., ...);
     }
 
-    function safeMint(address to, uint256 tokenId, string memory uri)
+    function safeMint(address to, uint256 tokenId)
         public onlyHasToken(MINTER_ROLE, msg.sender)
     {
         _safeMint(to, tokenId);
@@ -85,12 +85,16 @@ This example above uses `_grantRoleByERCXXX`, an `internal` function that is use
 
 == Reference Implementation on "plain" OpenZeppelin.
 
+=== Code on Sepolia (New version)
+
+Example of specifying MinterCert/BurnerCert
+https://sepolia.etherscan.io/address/0xfacee0d2f7e4ebe9620747434ee22095449252ea#code
+
+Example of specifying complex conditions:
+https://sepolia.etherscan.io/address/0x0b57d5752f35071ad47c4448a2e106757a111835#code
+
 === Code on Polygon zkEVM
 https://zkevm.polygonscan.com/address/0x63e0845cF578993d7946E759B71BC3e91Db43790#code
-
-=== Code on Goerli testnet.
-<< to be updated for updated version of ERC-7303 >>
-https://goerli.etherscan.io/address/0x9107607dff15de01fb831b8792f50812602dd544#code
 
 == Reference Implementation on ERC5679
 
