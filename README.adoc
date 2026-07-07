@@ -7,6 +7,36 @@ The circulation of tokens involves three main types of transactions: minting, tr
 
 In a traditional system, achieving such access control requires an off-chain management tool to grant or revoke necessary roles through the interface specified in the ERC-5982 role-based access control. However, representing such a role as a token eliminates the need for developing off-chain tools, potentially enhancing system security and reducing development costs.
 
+[[tctc-for-ai-agents]]
+== TCTC for AI Agents: Permission Control Without a Permission Server
+
+We are entering a world where AI agents do real work on our behalf — they operate services, manage assets, and execute transactions. Delegating work to an agent means delegating *authority*, and that raises three questions every agent deployment must answer:
+
+* How do you grant an agent exactly the capability it needs — and no more?
+* How can anyone verify what an agent is currently allowed to do?
+* When an agent misbehaves or its key leaks, how do you revoke its authority *instantly*?
+
+The traditional answer is a permission server: centralized infrastructure that issues credentials, checks scopes, and must itself be operated, secured, and trusted. TCTC removes that infrastructure entirely, because the chain itself becomes the policy decision point:
+
+* *A role is a token.* An agent holds a role if and only if it owns the control token (typically a soulbound ERC-721/ERC-1155).
+* *Grant = mint.* The human principal mints a role token to the agent's account.
+* *Revoke = burn.* Burning the token is the kill switch: at the agent's very next transaction, the on-chain check fails and the contract reverts with `ERC7303: not has a required token`. No server restart, no API-key rotation.
+* *Verification is public.* Any third party can read an agent's authority on-chain via `balanceOf`.
+* *Enforcement is on-chain.* The `onlyHasToken` modifier is the enforcement point. Even a malicious agent that skips every off-chain check gains nothing — its transaction reverts.
+
+Identity standards such as ERC-8004 (Trustless Agents) answer _who_ an agent is and whether it is reputable; TCTC / ERC-7303 answers _what it is allowed to do_. The two compose cleanly, for example by binding control tokens to the ERC-6551 token-bound account of the agent's identity NFT, so permissions survive agent wallet rotation.
+
+[[tctc-mcp]]
+=== MCP Server: tctc-mcp
+
+https://github.com/kofujimura/tctc-mcp[*tctc-mcp*] connects TCTC to AI agents through the Model Context Protocol (MCP), so any MCP-compatible agent (Claude Code, Claude Desktop, and others) can use it out of the box:
+
+* *Agent side (read-only mode):* the agent checks its own on-chain permissions before acting, using the `list_roles`, `check_role`, and `check_all_roles` tools. State-changing tools are not even registered in this mode.
+* *Principal side (admin mode):* the human grants and revokes roles in natural language — "Revoke the agent's MINTER_ROLE" becomes a `burn` transaction on the control token.
+* *ERC-8004 / ERC-6551 bridge:* an `agentId` can be resolved to its token-bound account, the recommended target for granting control tokens.
+
+The full cycle — mint a role token to an agent, the agent verifies its role and acts, the human burns the token, and the agent instantly loses the capability — has been verified end-to-end on Sepolia. The repository includes a demo configuration pointing at live, Etherscan-verified contracts.
+
 [[use-cases]]
 == Use cases
 
