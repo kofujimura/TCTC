@@ -123,15 +123,6 @@ https://sepolia.etherscan.io/address/0xfacee0d2f7e4ebe9620747434ee22095449252ea#
 Example of specifying complex conditions:
 https://sepolia.etherscan.io/address/0x0b57d5752f35071ad47c4448a2e106757a111835#code
 
-=== Code on Polygon zkEVM
-https://zkevm.polygonscan.com/address/0x63e0845cF578993d7946E759B71BC3e91Db43790#code
-
-== Reference Implementation on ERC5679
-
-=== Code on Goerli testnet.
-<< to be updated for updated version of ERC-7303 >>
-https://goerli.etherscan.io/address/0x647a3b5b039c9fe13df5d81e8b65063572ac655c#code
-
 == References
 White Paper: https://ssrn.com/abstract=4297719
 
