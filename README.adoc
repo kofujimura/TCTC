@@ -29,6 +29,10 @@ Identity standards such as ERC-8004 (Trustless Agents) answer _who_ an agent is 
 [[tctc-mcp]]
 === MCP Server: tctc-mcp
 
+image::images/tctc-mcp-demo-thumb.png[Watch the 60-second demo video, 100%, link=https://www.youtube.com/watch?v=o547bwYT32A]
+
+_60-second demo: a human grants an AI agent a minting permission, the agent verifies it on-chain and mints; the human burns the role token, and the agent instantly loses the capability._
+
 https://github.com/kofujimura/tctc-mcp[*tctc-mcp*] connects TCTC to AI agents through the Model Context Protocol (MCP), so any MCP-compatible agent (Claude Code, Claude Desktop, and others) can use it out of the box:
 
 * *Agent side (read-only mode):* the agent checks its own on-chain permissions before acting, using the `list_roles`, `check_role`, and `check_all_roles` tools. State-changing tools are not even registered in this mode.
