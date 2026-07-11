@@ -68,7 +68,7 @@ image::images/usecase3.png[Use case3: Address Verification, 100%]
 [[using-token-controller]]
 === Using `ERC-7303`
 
-link:contracts/ERC7303.sol[ERC7303.sol] is the contract that provides the functions for implementing TCTC.
+link:contracts/ERC7303.sol[ERC7303.sol] is the contract that provides the functions for implementing TCTC. It implements the link:contracts/IERC7303.sol[IERC7303] introspection interface, so that a contract's role structure can be discovered on-chain (see <<introspection>> below).
 
 Its usage is straightforward: for each role that you want to define, you will create a new _role identifier_ that is used to grant, revoke, and check if an account has that role. For each role, ERC-7303 has the mapping of contract IDs, which will hold the list of contracts of the token the participant must own with that role. When _grantRoleByERCXXX() is called multiple times, it requires to have a token of at least one of the contract IDs specified by the interface. 
 
@@ -104,10 +104,17 @@ contract MyToken is ERC721, ERC7303 {
         _safeMint(to, tokenId);
     }
 
-    function burn(uint256 tokenId) 
-        public onlyHasToken(BURNER_ROLE, msg.sender) 
+    function burn(uint256 tokenId)
+        public onlyHasToken(BURNER_ROLE, msg.sender)
     {
         _burn(tokenId);
+    }
+
+    // Expose IERC7303 via ERC-165 (required by the updated ERC-7303 spec).
+    function supportsInterface(bytes4 interfaceId)
+        public view override returns (bool)
+    {
+        return interfaceId == type(IERC7303).interfaceId || super.supportsInterface(interfaceId);
     }
 }
 ----
@@ -117,15 +124,37 @@ contract MyToken is ERC721, ERC7303 {
 
 This example above uses `_grantRoleByERCXXX`, an `internal` function that is useful when programmatically assigning roles (such as during construction). However, granting the 'minter' or 'burner' role to the actual user account is independent of this contract generation. For example, for a user to obtain minter role, they must obtain the required control token from the specified control token issuer. In the use case above, minter role is assigned to the issuer of MyToken as a token called Minter Cert. Similarly, a minter role can be revoked by burning the Minter Cert by the issuer.
 
-== Reference Implementation on "plain" OpenZeppelin.
+[[introspection]]
+=== Introspection (IERC7303)
 
-=== Code on Sepolia (New version)
+The updated ERC-7303 specification (https://github.com/ethereum/ERCs/pull/1872[ethereum/ERCs#1872], merged 2026-07-11) requires compliant contracts to expose their role structure on-chain through the `IERC7303` interface:
 
-Example of specifying MinterCert/BurnerCert
-https://sepolia.etherscan.io/address/0xfacee0d2f7e4ebe9620747434ee22095449252ea#code
+* `hasRole(bytes32 role, address account)` — does the account currently hold the role?
+* `getERC721ControlTokens(bytes32 role)` / `getERC1155ControlTokens(bytes32 role)` — which control tokens gate the role
+* `ERC721ControlTokenAdded` / `ERC1155ControlTokenAdded` events on configuration
+* ERC-165 detection with interfaceId `0x4ee69337`
 
-Example of specifying complex conditions:
-https://sepolia.etherscan.io/address/0x0b57d5752f35071ad47c4448a2e106757a111835#code
+Originally, ERC-7303 defined no interface: the party that configured a contract's roles was assumed to know its role structure, having designed it. Autonomous agents break this assumption — an agent exercising delegated authority is not the designer of the permission structure it operates under — so the contract itself must describe its role structure machine-readably. Tools such as https://github.com/kofujimura/tctc-mcp[tctc-mcp] (v0.2+) use this interface to discover role bindings automatically, with no configuration.
+
+== Reference Implementation on "plain" OpenZeppelin
+
+All contracts below are deployed on Sepolia, Etherscan-verified, and implement the `IERC7303` introspection interface (ERC-165 interfaceId `0x4ee69337`).
+
+=== Target token examples
+
+* link:contracts/MyToken.sol[MyToken.sol] — simple case: minting/burning gated by MinterCert/BurnerCert: +
+https://sepolia.etherscan.io/address/0x4682f98e7595D4478b398cC29d116b54a8FBA484#code
+* link:contracts/MyComplexToken.sol[MyComplexToken.sol] — complex conditions: `MINTER_ROLE` is an OR over two certificate types, and minting additionally requires `MEMBER_ROLE` (AND across roles): +
+https://sepolia.etherscan.io/address/0x873f0bf314A1e0B566015CEf9dA37783A729Fd02#code
+
+=== Control tokens
+
+* `AgentControlTokens` — soulbound, *issuer-burnable* ERC-1155 (typeId 1 = MinterCert, 2 = BurnerCert, 3 = PartnerMinterCert): +
+https://sepolia.etherscan.io/address/0x12342A7F0190B3AF3F4b47546D34006EDA54eE0B#code
+* `TCTC Membership` — soulbound ERC-721, the `MEMBER_ROLE` control token: +
+https://sepolia.etherscan.io/address/0x4223260CEf7cbA173C227b1B11E8a6a8Ce2E388a#code
+
+Because the certificates are burnable by the issuer, revocation does not depend on the holder's cooperation: burning the certificate is the kill switch, as required for autonomous-agent deployments by the Security Considerations of ERC-7303.
 
 == References
 White Paper: https://ssrn.com/abstract=4297719

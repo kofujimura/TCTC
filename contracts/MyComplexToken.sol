@@ -2,23 +2,27 @@
 // Author: Ko Fujimura <ko@fujimura.com>
 // Open source repo: https://github.com/kofujimura/TCTC
 
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "./ERC7303.sol";
 
-contract MyToken is ERC721, ERC721URIStorage, ERC7303 {
+contract MyComplexToken is ERC721, ERC721URIStorage, ERC7303 {
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
+    bytes32 public constant MEMBER_ROLE = keccak256("MEMBER_ROLE");
 
-    constructor() ERC721("MyToken", "MTK") {
-        // Specifies the deployed contract ID of the control token.
-        // This sample contract is deployed on Goerli.
-        _grantRoleByERC721Token(MINTER_ROLE, 0xF1e33c646a12F68bC8015b4AED29BB316fA2D593);
-        _grantRoleByERC721Token(BURNER_ROLE, 0xcDc6fD5F29E2641f25c90235eDA984f99aA3a1DD);
-        _grantRoleByERC1155Token(MINTER_ROLE, 0x11d43325044f7f06727cb374aE78C3A3494F4b26, 1);  // TypeID = 1
-        _grantRoleByERC1155Token(BURNER_ROLE, 0x11d43325044f7f06727cb374aE78C3A3494F4b26, 2);  // TypeID = 2
+    constructor() ERC721("MyComplexToken", "MCT") {
+        // Minter must own at least one of the tokens below (OR semantics):
+        // typeId 1 = MinterCert, typeId 3 = PartnerMinterCert.
+        _grantRoleByERC1155(MINTER_ROLE, 0x12342A7F0190B3AF3F4b47546D34006EDA54eE0B, 1);
+        _grantRoleByERC1155(MINTER_ROLE, 0x12342A7F0190B3AF3F4b47546D34006EDA54eE0B, 3);
+        // Minter also must own the membership token below (AND across roles):
+        _grantRoleByERC721(MEMBER_ROLE, 0x4223260CEf7cbA173C227b1B11E8a6a8Ce2E388a);
+
+        // Burner must own the token below:
+        _grantRoleByERC1155(BURNER_ROLE, 0x12342A7F0190B3AF3F4b47546D34006EDA54eE0B, 2);
     }
 
     function _baseURI() internal pure override returns (string memory) {
@@ -26,23 +30,19 @@ contract MyToken is ERC721, ERC721URIStorage, ERC7303 {
     }
 
     function safeMint(address to, uint256 tokenId, string memory uri)
-        public onlyHasToken(MINTER_ROLE, msg.sender)
+        public onlyHasToken(MINTER_ROLE, msg.sender) onlyHasToken(MEMBER_ROLE, msg.sender)
     {
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
     }
 
-    function burn(uint256 tokenId) 
-        public onlyHasToken(BURNER_ROLE, msg.sender) 
+    function burn(uint256 tokenId)
+        public onlyHasToken(BURNER_ROLE, msg.sender)
     {
         _burn(tokenId);
     }
 
     // The following functions are overrides required by Solidity.
-    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
-        super._burn(tokenId);
-    }
-
     function tokenURI(uint256 tokenId)
         public
         view
@@ -58,7 +58,6 @@ contract MyToken is ERC721, ERC721URIStorage, ERC7303 {
         override(ERC721, ERC721URIStorage)
         returns (bool)
     {
-        return super.supportsInterface(interfaceId);
+        return interfaceId == type(IERC7303).interfaceId || super.supportsInterface(interfaceId);
     }
-
 }
