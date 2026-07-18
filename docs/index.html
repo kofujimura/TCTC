@@ -54,6 +54,7 @@
     background: rgba(255,255,255,.02);
   }
   .badge.accent { color: var(--accent-2); border-color: rgba(79,143,247,.45); }
+  a.badge:hover { text-decoration: none; border-color: var(--accent); color: var(--accent-2); }
   .hero h1 {
     font-size: clamp(34px, 5.4vw, 58px);
     line-height: 1.12;
@@ -215,9 +216,9 @@
 <header class="hero">
   <div class="wrap">
     <div class="badges">
-      <span class="badge accent">for the AI-agent era</span>
-      <span class="badge">ERC-7303</span>
-      <span class="badge">a lineage since USENIX Security 1999</span>
+      <a class="badge accent" href="#agents">for the AI-agent era</a>
+      <a class="badge" href="https://eips.ethereum.org/EIPS/eip-7303" target="_blank" rel="noreferrer">ERC-7303</a>
+      <a class="badge" href="#lineage">a lineage since USENIX Security 1999</a>
     </div>
     <h1>Don't hand your agent a password.<br><span class="grad">Hand it a token.</span></h1>
     <p class="sub">
