@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TCTC — Token-Controlled Token Circulation (ERC-7303)</title>
+<meta name="description" content="A role is a token: grant is a mint, revoke is a burn. ERC-7303 turns on-chain tokens into a general-purpose permission layer for humans and AI agents.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎫</text></svg>">
+<style>
+  :root {
+    --bg: #0b0e13;
+    --bg-2: #10141c;
+    --panel: #151b26;
+    --panel-2: #1a2130;
+    --border: #263042;
+    --text: #dfe6f1;
+    --muted: #8d99ad;
+    --accent: #4f8ff7;
+    --accent-2: #7db2ff;
+    --mint: #2ecc8f;
+    --burn: #f26d6d;
+    --warn: #f0b429;
+    --radius: 14px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Hiragino Sans", sans-serif;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent-2); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- hero ---------- */
+  .hero {
+    position: relative;
+    padding: 96px 0 72px;
+    background:
+      radial-gradient(900px 420px at 20% -10%, rgba(79,143,247,.16), transparent 60%),
+      radial-gradient(700px 380px at 85% 0%, rgba(46,204,143,.10), transparent 60%),
+      var(--bg);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .badges { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 26px; }
+  .badge {
+    font-size: 12.5px; letter-spacing: .4px;
+    padding: 5px 12px; border-radius: 999px;
+    border: 1px solid var(--border); color: var(--muted);
+    background: rgba(255,255,255,.02);
+  }
+  .badge.accent { color: var(--accent-2); border-color: rgba(79,143,247,.45); }
+  .hero h1 {
+    font-size: clamp(34px, 5.4vw, 58px);
+    line-height: 1.12;
+    letter-spacing: -0.5px;
+    font-weight: 800;
+    max-width: 850px;
+  }
+  .hero h1 .grad {
+    background: linear-gradient(92deg, var(--accent-2), var(--mint));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero .sub {
+    margin-top: 22px; max-width: 700px;
+    font-size: 18px; color: var(--muted);
+  }
+  .hero .sub strong { color: var(--text); font-weight: 600; }
+  .cta { margin-top: 36px; display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; padding: 12px 22px; border-radius: 10px;
+    font-weight: 600; font-size: 15px; border: 1px solid var(--border);
+    color: var(--text); background: var(--panel);
+    transition: transform .12s ease, border-color .12s ease;
+  }
+  .btn:hover { text-decoration: none; transform: translateY(-1px); border-color: var(--accent); }
+  .btn.primary {
+    background: linear-gradient(92deg, #3b7ae0, #4f8ff7);
+    border-color: transparent; color: #fff;
+  }
+  .kicker {
+    font-size: 13px; font-weight: 700; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--accent);
+    margin-bottom: 14px;
+  }
+
+  /* ---------- sections ---------- */
+  section { padding: 84px 0; }
+  section.alt { background: var(--bg-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  h2 { font-size: clamp(26px, 3.4vw, 36px); letter-spacing: -.3px; line-height: 1.2; margin-bottom: 16px; }
+  .lead { color: var(--muted); font-size: 17px; max-width: 720px; }
+  .lead strong { color: var(--text); }
+
+  /* three verbs */
+  .verbs { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin-top: 44px; }
+  .verb {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 26px 24px;
+  }
+  .verb .op {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px; padding: 3px 10px; border-radius: 6px; font-weight: 600;
+  }
+  .verb.grant .op { color: var(--mint); background: rgba(46,204,143,.12); }
+  .verb.check .op { color: var(--accent-2); background: rgba(79,143,247,.12); }
+  .verb.revoke .op { color: var(--burn); background: rgba(242,109,109,.12); }
+  .verb h3 { margin: 14px 0 8px; font-size: 20px; }
+  .verb p { color: var(--muted); font-size: 15px; }
+
+  /* onion */
+  .onion-grid {
+    display: grid; grid-template-columns: minmax(300px, 460px) 1fr;
+    gap: 56px; align-items: center; margin-top: 40px;
+  }
+  @media (max-width: 800px) { .onion-grid { grid-template-columns: 1fr; } }
+  .onion-svg { width: 100%; height: auto; display: block; }
+  .layers { list-style: none; display: flex; flex-direction: column; gap: 18px; }
+  .layers li {
+    background: var(--panel); border: 1px solid var(--border);
+    border-left: 4px solid var(--ring, var(--accent));
+    border-radius: 10px; padding: 16px 18px;
+  }
+  .layers li h4 { font-size: 16px; margin-bottom: 4px; }
+  .layers li p { color: var(--muted); font-size: 14.5px; }
+  .layers .l1 { --ring: #f0b429; }
+  .layers .l2 { --ring: #2ecc8f; }
+  .layers .l3 { --ring: #4f8ff7; }
+  .layers .l4 { --ring: #9b8cf7; }
+
+  /* agent section */
+  .split {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 56px;
+    align-items: center; margin-top: 40px;
+  }
+  @media (max-width: 860px) { .split { grid-template-columns: 1fr; } }
+  .killswitch {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 26px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 14px; line-height: 2.05;
+  }
+  .killswitch .c { color: var(--muted); }
+  .killswitch .g { color: var(--mint); }
+  .killswitch .r { color: var(--burn); }
+  .killswitch .b { color: var(--accent-2); }
+  .points { list-style: none; display: flex; flex-direction: column; gap: 14px; margin-top: 26px; }
+  .points li { display: flex; gap: 12px; color: var(--muted); font-size: 15.5px; }
+  .points li::before { content: "◆"; color: var(--accent); font-size: 11px; line-height: 2.2; }
+  .points li strong { color: var(--text); }
+
+  /* dashboard */
+  .shot {
+    margin-top: 44px; border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; box-shadow: 0 24px 70px rgba(0,0,0,.45);
+    background: var(--panel);
+  }
+  .shot img { width: 100%; display: block; }
+  .shot-caption { text-align: center; color: var(--muted); font-size: 14px; margin-top: 16px; }
+
+  /* lineage */
+  .timeline { list-style: none; margin-top: 44px; display: flex; flex-direction: column; gap: 0; }
+  .timeline li {
+    position: relative; padding: 0 0 34px 34px;
+    border-left: 2px solid var(--border); margin-left: 8px;
+  }
+  .timeline li:last-child { border-left-color: transparent; padding-bottom: 0; }
+  .timeline li::before {
+    content: ""; position: absolute; left: -7px; top: 4px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--accent); box-shadow: 0 0 0 4px rgba(79,143,247,.18);
+  }
+  .timeline .year { font-size: 13px; font-weight: 700; letter-spacing: 1.5px; color: var(--accent-2); }
+  .timeline h4 { font-size: 18px; margin: 2px 0 4px; }
+  .timeline p { color: var(--muted); font-size: 15px; max-width: 640px; }
+
+  /* links / footer */
+  .linkgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; margin-top: 40px; }
+  .linkcard {
+    display: block; background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px 20px; color: var(--text);
+    transition: border-color .12s ease, transform .12s ease;
+  }
+  .linkcard:hover { border-color: var(--accent); text-decoration: none; transform: translateY(-2px); }
+  .linkcard .t { font-weight: 700; font-size: 15.5px; }
+  .linkcard .d { color: var(--muted); font-size: 13.5px; margin-top: 4px; }
+  footer {
+    border-top: 1px solid var(--border); padding: 36px 0 46px;
+    color: var(--muted); font-size: 14px;
+  }
+  footer .wrap { display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge accent">ERC-7303</span>
+      <span class="badge">a lineage since USENIX Security 1999</span>
+      <span class="badge">humans · AI agents · contracts</span>
+    </div>
+    <h1>A role is a token.<br><span class="grad">Grant is a mint. Revoke is a burn.</span></h1>
+    <p class="sub">
+      <strong>Token-Controlled Token Circulation (TCTC)</strong> turns permissions into
+      on-chain tokens. Whoever holds the token holds the role — checkable by any contract,
+      grantable to any address, and revocable by the issuer in a single burn.
+      No permission server. The chain is the source of truth.
+    </p>
+    <div class="cta">
+      <a class="btn primary" href="https://tctc-mcp.vercel.app/" target="_blank" rel="noreferrer">Open the dashboard</a>
+      <a class="btn" href="https://eips.ethereum.org/EIPS/eip-7303" target="_blank" rel="noreferrer">Read ERC-7303</a>
+      <a class="btn" href="https://github.com/kofujimura/TCTC" target="_blank" rel="noreferrer">GitHub</a>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="kicker">The whole model in three verbs</div>
+    <h2>Permissions without a permission server</h2>
+    <p class="lead">
+      ERC-7303 gates a target contract's functions with a modifier that asks one question:
+      <strong>does this address hold the required token?</strong> Everything else — granting,
+      auditing, revoking — is ordinary token mechanics that every wallet, explorer, and
+      indexer already understands.
+    </p>
+    <div class="verbs">
+      <div class="verb grant">
+        <span class="op">grant = mint()</span>
+        <h3>Grant</h3>
+        <p>The issuer mints a control token — an ERC-721 or ERC-1155 certificate — to the
+           holder. Soulbound variants stop delegation; expirable variants end it on a timer.</p>
+      </div>
+      <div class="verb check">
+        <span class="op">check = balanceOf() &gt; 0</span>
+        <h3>Check</h3>
+        <p>The target contract checks the balance at call time. Multiple certificates can
+           OR into one role; multiple roles can AND across modifiers. Composition, on-chain.</p>
+      </div>
+      <div class="verb revoke">
+        <span class="op">revoke = burn()</span>
+        <h3>Revoke</h3>
+        <p>The issuer burns the certificate — no holder cooperation needed. The very next
+           call fails. This is the kill switch that makes delegation safe.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="onion">
+  <div class="wrap">
+    <div class="kicker">The onion model</div>
+    <h2>Tokens controlling tokens, all the way down</h2>
+    <p class="lead">
+      TCTC is recursive: the circulation of a token is controlled by another token, whose
+      circulation can itself be token-controlled. The recursion bottoms out at the innermost
+      layer — a single issuer key. Trust flows outward, and can be cut at any layer.
+    </p>
+    <div class="onion-grid">
+      <svg class="onion-svg" viewBox="0 0 460 460" role="img" aria-label="Onion model: issuer at the center, then control tokens, then roles on target contracts, then holders">
+        <defs>
+          <radialGradient id="glow" cx="50%" cy="50%" r="60%">
+            <stop offset="0%" stop-color="#f0b429" stop-opacity=".28"/>
+            <stop offset="100%" stop-color="#f0b429" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <circle cx="230" cy="230" r="216" fill="#151b26" stroke="#9b8cf7" stroke-width="1.6" stroke-dasharray="3 5"/>
+        <circle cx="230" cy="230" r="160" fill="#1a2130" stroke="#4f8ff7" stroke-width="1.6"/>
+        <circle cx="230" cy="230" r="106" fill="#20293a" stroke="#2ecc8f" stroke-width="1.6"/>
+        <circle cx="230" cy="230" r="54"  fill="url(#glow)"/>
+        <circle cx="230" cy="230" r="54"  fill="#2a2417" stroke="#f0b429" stroke-width="1.8"/>
+        <text x="230" y="224" text-anchor="middle" font-size="15" font-weight="700" fill="#f0b429">issuer</text>
+        <text x="230" y="243" text-anchor="middle" font-size="11" fill="#c9a13b">onlyOwner</text>
+        <text x="230" y="146" text-anchor="middle" font-size="13.5" font-weight="600" fill="#2ecc8f" paint-order="stroke" stroke="#20293a" stroke-width="8" stroke-linejoin="round">control tokens</text>
+        <text x="230" y="97"  text-anchor="middle" font-size="13.5" font-weight="600" fill="#7db2ff" paint-order="stroke" stroke="#1a2130" stroke-width="8" stroke-linejoin="round">roles on target contracts</text>
+        <text x="230" y="40"  text-anchor="middle" font-size="13.5" font-weight="600" fill="#b7abfa" paint-order="stroke" stroke="#151b26" stroke-width="8" stroke-linejoin="round">holders — humans &amp; AI agents</text>
+      </svg>
+      <ol class="layers">
+        <li class="l1"><h4>Issuer — the root of trust</h4>
+          <p>The innermost layer: certificate issuance governed by <code>onlyOwner</code>
+             alone. A single key (or a multisig) that can always mint — and always burn.</p></li>
+        <li class="l2"><h4>Control tokens — the certificates</h4>
+          <p>Soulbound ERC-1155/721 tokens representing qualifications: MinterCert,
+             MemberPass, an expiring contractor badge. One collection can serve many targets.</p></li>
+        <li class="l3"><h4>Roles on target contracts</h4>
+          <p>Targets declare which certificates satisfy which role (introspectable via
+             ERC-165). OR within a role, AND across modifiers — policy lives in the target.</p></li>
+        <li class="l4"><h4>Holders — humans and AI agents</h4>
+          <p>The outermost layer: whoever holds the token can act — an employee, a partner,
+             an autonomous agent — until expiry or the issuer's burn says otherwise.</p></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section id="agents">
+  <div class="wrap">
+    <div class="kicker">AI agent delegation</div>
+    <h2>The permission layer autonomous agents were missing</h2>
+    <p class="lead">
+      Delegating real capability to an AI agent needs an authorization you can revoke faster
+      than the agent can act. TCTC gives an agent's wallet a role the same way it gives a
+      human one — and takes it back with one burn, or lets it expire with no transaction at all.
+    </p>
+    <div class="split">
+      <div class="killswitch">
+        <div><span class="c"># principal grants the agent a role (timed)</span></div>
+        <div><span class="g">grant_role</span>(agent, MINTER_ROLE, <span class="b">expires_in: 1h</span>) ✅</div>
+        <div><span class="c"># agent verifies its own permission on-chain</span></div>
+        <div><span class="b">check_role</span>(agent, MINTER_ROLE) → <span class="g">true</span> · balanceOf = 1</div>
+        <div><span class="c"># something feels wrong — kill switch</span></div>
+        <div><span class="r">revoke_role</span>(agent, MINTER_ROLE) 🔥 <span class="c">burnByIssuer</span></div>
+        <div><span class="b">check_role</span>(agent, MINTER_ROLE) → <span class="r">false</span> · next call reverts</div>
+      </div>
+      <div>
+        <ul class="points">
+          <li><span><strong>Kill switch, on-chain.</strong> The issuer burns the certificate
+            unilaterally; the agent's next transaction fails at the contract, regardless of
+            what the agent believes.</span></li>
+          <li><span><strong>Gasless auto-expiry.</strong> Expirable certificates report
+            <code>balanceOf = 0</code> once the clock runs out — a forgotten revocation
+            revokes itself.</span></li>
+          <li><span><strong>Agent-native tooling.</strong>
+            <a href="https://github.com/kofujimura/tctc-mcp" target="_blank" rel="noreferrer">tctc-mcp</a>
+            exposes check / grant / revoke to any MCP client, with
+            <a href="https://github.com/kofujimura/tctc-skills" target="_blank" rel="noreferrer">delegation rules</a>
+            for the agents themselves.</span></li>
+          <li><span><strong>See it happen.</strong>
+            <a href="https://www.youtube.com/watch?v=o547bwYT32A" target="_blank" rel="noreferrer">60-second demo</a>:
+            grant → agent mints → burn → agent instantly loses the capability.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="dashboard">
+  <div class="wrap">
+    <div class="kicker">For humans</div>
+    <h2>A general-purpose permission manager</h2>
+    <p class="lead">
+      The <a href="https://tctc-mcp.vercel.app/" target="_blank" rel="noreferrer">TCTC Dashboard</a>
+      makes the whole model clickable: inspect any ERC-7303 contract, watch role verdicts and
+      balance evidence live, grant and revoke as the issuer, and deploy new certificate
+      collections straight from a browser wallet. Not just for AI delegation —
+      <strong>any on-chain permission, managed like tokens</strong>.
+    </p>
+    <a class="shot" href="https://tctc-mcp.vercel.app/" target="_blank" rel="noreferrer">
+      <img src="assets/dashboard.png" alt="TCTC Dashboard screenshot: a target contract inspected, MINTER_ROLE HAS ROLE with balance evidence, issuer grant/revoke controls">
+    </a>
+    <p class="shot-caption">Live on Sepolia — roles, evidence, and issuer controls in one page. Click to open.</p>
+  </div>
+</section>
+
+<section id="lineage">
+  <div class="wrap">
+    <div class="kicker">Lineage</div>
+    <h2>Twenty-seven years of tickets controlling tickets</h2>
+    <ul class="timeline">
+      <li>
+        <div class="year">1999</div>
+        <h4>Digital-Ticket-Controlled Digital Ticket Circulation</h4>
+        <p>The original scheme — presented at the
+           <a href="https://www.usenix.org/conference/8th-usenix-security-symposium/digital-ticket-controlled-digital-ticket-circulation" target="_blank" rel="noreferrer">8th USENIX Security Symposium</a>:
+           a ticket's circulation governed by another ticket, decades before blockchains
+           made tickets programmable.</p>
+      </li>
+      <li>
+        <div class="year">2023</div>
+        <h4>ERC-7303 — Token-Controlled Token Circulation</h4>
+        <p>The idea lands on Ethereum:
+           <a href="https://eips.ethereum.org/EIPS/eip-7303" target="_blank" rel="noreferrer">a standard interface</a>
+           for gating token actions with token ownership, using plain ERC-721/1155
+           certificates as roles.</p>
+      </li>
+      <li>
+        <div class="year">2026</div>
+        <h4>The AI-agent era</h4>
+        <p>Machine-readable introspection joins the spec; the
+           <a href="https://github.com/kofujimura/tctc-mcp" target="_blank" rel="noreferrer">MCP server</a>,
+           expiring certificates, and the
+           <a href="https://tctc-mcp.vercel.app/" target="_blank" rel="noreferrer">dashboard</a>
+           turn TCTC into a working permission platform for humans and autonomous agents alike.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <div class="kicker">Build with it</div>
+    <h2>Everything is open</h2>
+    <div class="linkgrid">
+      <a class="linkcard" href="https://eips.ethereum.org/EIPS/eip-7303" target="_blank" rel="noreferrer">
+        <div class="t">ERC-7303 specification</div>
+        <div class="d">The standard, with test fixtures in its official assets</div>
+      </a>
+      <a class="linkcard" href="https://github.com/kofujimura/TCTC" target="_blank" rel="noreferrer">
+        <div class="t">Reference implementation</div>
+        <div class="d">ERC7303.sol, samples, Sepolia deployments</div>
+      </a>
+      <a class="linkcard" href="https://github.com/kofujimura/tctc-mcp" target="_blank" rel="noreferrer">
+        <div class="t">tctc-mcp</div>
+        <div class="d">MCP server on npm — roles for AI agents</div>
+      </a>
+      <a class="linkcard" href="https://tctc-mcp.vercel.app/" target="_blank" rel="noreferrer">
+        <div class="t">TCTC Dashboard</div>
+        <div class="d">Live role manager — inspect, grant, revoke, deploy</div>
+      </a>
+      <a class="linkcard" href="https://github.com/kofujimura/tctc-skills" target="_blank" rel="noreferrer">
+        <div class="t">tctc-skills</div>
+        <div class="d">Delegation rules that teach agents to use TCTC safely</div>
+      </a>
+      <a class="linkcard" href="https://ethereum-magicians.org/t/erc-7303-token-controlled-token-circulation/15020" target="_blank" rel="noreferrer">
+        <div class="t">Discussion</div>
+        <div class="d">The ERC-7303 thread on Ethereum Magicians</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>TCTC — Token-Controlled Token Circulation · <a href="https://eips.ethereum.org/EIPS/eip-7303" target="_blank" rel="noreferrer">ERC-7303</a></span>
+    <span>MIT-licensed · <a href="https://github.com/kofujimura/TCTC" target="_blank" rel="noreferrer">kofujimura/TCTC</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
