@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TCTC — Token-Controlled Token Circulation (ERC-7303)</title>
-<meta name="description" content="A role is a token: grant is a mint, revoke is a burn. ERC-7303 turns on-chain tokens into a general-purpose permission layer for humans and AI agents.">
+<meta name="description" content="Don't hand your AI agent a password — hand it a token. TCTC (ERC-7303) makes permissions on-chain tokens: grant is a mint, revoke is a burn, and the chain is the source of truth.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎫</text></svg>">
 <style>
   :root {
@@ -94,6 +94,22 @@
   h2 { font-size: clamp(26px, 3.4vw, 36px); letter-spacing: -.3px; line-height: 1.2; margin-bottom: 16px; }
   .lead { color: var(--muted); font-size: 17px; max-width: 720px; }
   .lead strong { color: var(--text); }
+
+  /* credential vs token comparison */
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 44px; }
+  @media (max-width: 760px) { .compare { grid-template-columns: 1fr; } }
+  .compare .col {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 26px 26px 22px;
+  }
+  .compare .col.bad { border-top: 3px solid var(--burn); }
+  .compare .col.good { border-top: 3px solid var(--mint); }
+  .compare h3 { font-size: 18px; margin-bottom: 16px; }
+  .compare ul { list-style: none; display: flex; flex-direction: column; gap: 13px; }
+  .compare li { display: flex; gap: 11px; color: var(--muted); font-size: 15px; line-height: 1.55; }
+  .compare li strong { color: var(--text); }
+  .compare .col.bad li::before { content: "✕"; color: var(--burn); font-weight: 700; flex: 0 0 auto; }
+  .compare .col.good li::before { content: "✓"; color: var(--mint); font-weight: 700; flex: 0 0 auto; }
 
   /* three verbs */
   .verbs { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin-top: 44px; }
@@ -199,16 +215,17 @@
 <header class="hero">
   <div class="wrap">
     <div class="badges">
-      <span class="badge accent">ERC-7303</span>
+      <span class="badge accent">for the AI-agent era</span>
+      <span class="badge">ERC-7303</span>
       <span class="badge">a lineage since USENIX Security 1999</span>
-      <span class="badge">humans · AI agents · contracts</span>
     </div>
-    <h1>A role is a token.<br><span class="grad">Grant is a mint. Revoke is a burn.</span></h1>
+    <h1>Don't hand your agent a password.<br><span class="grad">Hand it a token.</span></h1>
     <p class="sub">
-      <strong>Token-Controlled Token Circulation (TCTC)</strong> turns permissions into
-      on-chain tokens. Whoever holds the token holds the role — checkable by any contract,
-      grantable to any address, and revocable by the issuer in a single burn.
-      No permission server. The chain is the source of truth.
+      When an AI agent acts on your behalf, its authority should be something you can
+      <strong>see, limit, and destroy</strong> — not a secret it carries.
+      <strong>Token-Controlled Token Circulation (TCTC / ERC-7303)</strong> makes each
+      permission an on-chain token: <strong>grant is a mint, revoke is a burn</strong>,
+      and the chain — not a permission server — is the source of truth.
     </p>
     <div class="cta">
       <a class="btn primary" href="https://tctc-mcp.vercel.app/" target="_blank" rel="noreferrer">Open the dashboard</a>
@@ -218,7 +235,51 @@
   </div>
 </header>
 
-<section>
+<section id="why">
+  <div class="wrap">
+    <div class="kicker">Why tokens, not credentials</div>
+    <h2>Delegation you can audit, limit, and end</h2>
+    <p class="lead">
+      API keys and passwords were designed for software you trust completely. An autonomous
+      agent is something new: fast, capable, and fallible — with your credentials in its
+      pocket. Handing it a secret and handing it an on-chain token fail in very different ways.
+    </p>
+    <div class="compare">
+      <div class="col bad">
+        <h3>Delegating with a credential</h3>
+        <ul>
+          <li><span><strong>Secrets copy.</strong> A leaked or prompt-injected key works for
+            whoever holds it — you can't tell the agent from the attacker.</span></li>
+          <li><span><strong>Revocation is rotation.</strong> Find every place the key lives,
+            rotate it everywhere, and hope you got them all.</span></li>
+          <li><span><strong>No audit surface.</strong> Who can do what, right now? Nobody can
+            answer without crawling config files.</span></li>
+          <li><span><strong>Coarse scope.</strong> One key usually opens far more than the
+            task at hand needs.</span></li>
+          <li><span><strong>Forgotten grants live forever.</strong> Credentials don't expire
+            unless someone remembers them.</span></li>
+        </ul>
+      </div>
+      <div class="col good">
+        <h3>Delegating with a token</h3>
+        <ul>
+          <li><span><strong>Soulbound certificates can't be copied</strong> or transferred —
+            authority stays exactly where you put it.</span></li>
+          <li><span><strong>Revocation is one burn.</strong> The issuer acts unilaterally;
+            the agent's next call fails on-chain, whatever the agent believes.</span></li>
+          <li><span><strong>Holdings are public.</strong> Anyone can verify who holds which
+            role, live, on any block explorer.</span></li>
+          <li><span><strong>Roles are scoped and composable.</strong> One certificate per
+            capability; OR within a role, AND across roles.</span></li>
+          <li><span><strong>Grants can end themselves.</strong> Expiring certificates report
+            <code>balanceOf = 0</code> when time runs out — no transaction needed.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
   <div class="wrap">
     <div class="kicker">The whole model in three verbs</div>
     <h2>Permissions without a permission server</h2>
@@ -246,6 +307,47 @@
         <h3>Revoke</h3>
         <p>The issuer burns the certificate — no holder cooperation needed. The very next
            call fails. This is the kill switch that makes delegation safe.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="agents">
+  <div class="wrap">
+    <div class="kicker">Running today</div>
+    <h2>Not a proposal — it already runs</h2>
+    <p class="lead">
+      Delegating real capability to an AI agent needs an authorization you can revoke faster
+      than the agent can act. TCTC gives an agent's wallet a role the same way it gives a
+      human one — and takes it back with one burn, or lets it expire with no transaction at all.
+    </p>
+    <div class="split">
+      <div class="killswitch">
+        <div><span class="c"># principal grants the agent a role (timed)</span></div>
+        <div><span class="g">grant_role</span>(agent, MINTER_ROLE, <span class="b">expires_in: 1h</span>) ✅</div>
+        <div><span class="c"># agent verifies its own permission on-chain</span></div>
+        <div><span class="b">check_role</span>(agent, MINTER_ROLE) → <span class="g">true</span> · balanceOf = 1</div>
+        <div><span class="c"># something feels wrong — kill switch</span></div>
+        <div><span class="r">revoke_role</span>(agent, MINTER_ROLE) 🔥 <span class="c">burnByIssuer</span></div>
+        <div><span class="b">check_role</span>(agent, MINTER_ROLE) → <span class="r">false</span> · next call reverts</div>
+      </div>
+      <div>
+        <ul class="points">
+          <li><span><strong>Kill switch, on-chain.</strong> The issuer burns the certificate
+            unilaterally; the agent's next transaction fails at the contract, regardless of
+            what the agent believes.</span></li>
+          <li><span><strong>Gasless auto-expiry.</strong> Expirable certificates report
+            <code>balanceOf = 0</code> once the clock runs out — a forgotten revocation
+            revokes itself.</span></li>
+          <li><span><strong>Agent-native tooling.</strong>
+            <a href="https://github.com/kofujimura/tctc-mcp" target="_blank" rel="noreferrer">tctc-mcp</a>
+            exposes check / grant / revoke to any MCP client, with
+            <a href="https://github.com/kofujimura/tctc-skills" target="_blank" rel="noreferrer">delegation rules</a>
+            for the agents themselves.</span></li>
+          <li><span><strong>See it happen.</strong>
+            <a href="https://www.youtube.com/watch?v=o547bwYT32A" target="_blank" rel="noreferrer">60-second demo</a>:
+            grant → agent mints → burn → agent instantly loses the capability.</span></li>
+        </ul>
       </div>
     </div>
   </div>
@@ -297,48 +399,7 @@
   </div>
 </section>
 
-<section id="agents">
-  <div class="wrap">
-    <div class="kicker">AI agent delegation</div>
-    <h2>The permission layer autonomous agents were missing</h2>
-    <p class="lead">
-      Delegating real capability to an AI agent needs an authorization you can revoke faster
-      than the agent can act. TCTC gives an agent's wallet a role the same way it gives a
-      human one — and takes it back with one burn, or lets it expire with no transaction at all.
-    </p>
-    <div class="split">
-      <div class="killswitch">
-        <div><span class="c"># principal grants the agent a role (timed)</span></div>
-        <div><span class="g">grant_role</span>(agent, MINTER_ROLE, <span class="b">expires_in: 1h</span>) ✅</div>
-        <div><span class="c"># agent verifies its own permission on-chain</span></div>
-        <div><span class="b">check_role</span>(agent, MINTER_ROLE) → <span class="g">true</span> · balanceOf = 1</div>
-        <div><span class="c"># something feels wrong — kill switch</span></div>
-        <div><span class="r">revoke_role</span>(agent, MINTER_ROLE) 🔥 <span class="c">burnByIssuer</span></div>
-        <div><span class="b">check_role</span>(agent, MINTER_ROLE) → <span class="r">false</span> · next call reverts</div>
-      </div>
-      <div>
-        <ul class="points">
-          <li><span><strong>Kill switch, on-chain.</strong> The issuer burns the certificate
-            unilaterally; the agent's next transaction fails at the contract, regardless of
-            what the agent believes.</span></li>
-          <li><span><strong>Gasless auto-expiry.</strong> Expirable certificates report
-            <code>balanceOf = 0</code> once the clock runs out — a forgotten revocation
-            revokes itself.</span></li>
-          <li><span><strong>Agent-native tooling.</strong>
-            <a href="https://github.com/kofujimura/tctc-mcp" target="_blank" rel="noreferrer">tctc-mcp</a>
-            exposes check / grant / revoke to any MCP client, with
-            <a href="https://github.com/kofujimura/tctc-skills" target="_blank" rel="noreferrer">delegation rules</a>
-            for the agents themselves.</span></li>
-          <li><span><strong>See it happen.</strong>
-            <a href="https://www.youtube.com/watch?v=o547bwYT32A" target="_blank" rel="noreferrer">60-second demo</a>:
-            grant → agent mints → burn → agent instantly loses the capability.</span></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="alt" id="dashboard">
+<section id="dashboard">
   <div class="wrap">
     <div class="kicker">For humans</div>
     <h2>A general-purpose permission manager</h2>
@@ -356,7 +417,7 @@
   </div>
 </section>
 
-<section id="lineage">
+<section class="alt" id="lineage">
   <div class="wrap">
     <div class="kicker">Lineage</div>
     <h2>Twenty-seven years of tickets controlling tickets</h2>
@@ -390,7 +451,7 @@
   </div>
 </section>
 
-<section class="alt">
+<section>
   <div class="wrap">
     <div class="kicker">Build with it</div>
     <h2>Everything is open</h2>
