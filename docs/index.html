@@ -456,7 +456,40 @@
   </div>
 </section>
 
-<section class="alt" id="lineage">
+<section class="alt" id="gate">
+  <div class="wrap">
+    <div class="kicker">For the boundary</div>
+    <h2>Token-gate any MCP server — without touching it</h2>
+    <p class="lead">
+      Agents get their capabilities through tools. <a href="https://github.com/kofujimura/tctc-mcp/tree/main/gate" target="_blank" rel="noreferrer">tctc-gate</a>
+      is a transparent proxy that wraps an <strong>existing, unmodified MCP server</strong> and
+      checks an ERC-7303 role on-chain before forwarding each tool call — the principal adds
+      the permission boundary, no server author's cooperation required.
+    </p>
+    <div class="killswitch" style="margin-top:36px">
+      <div><span class="c">agent ──MCP──▶</span> <span class="b">tctc-gate</span> <span class="c">──MCP──▶ any existing MCP server (unmodified)</span></div>
+      <div><span class="c">before each tool call:</span> <span class="b">hasRole? balanceOf?</span> <span class="c">──▶ the chain decides</span></div>
+      <div><span class="c"># no role → the call never reaches the server:</span></div>
+      <div><span class="r">TCTC_ROLE_DENIED</span> <span class="c">+ a grant URL that opens the dashboard, one click from approval</span></div>
+      <div><span class="c"># burn the certificate →</span> <span class="r">the next call is refused</span><span class="c">; expiring certs end the delegation by themselves</span></div>
+    </div>
+    <ul class="points">
+      <li><span><strong>Deny closes the loop.</strong> A refused agent reports a URL; the
+        principal lands on the dashboard with target, subject and role pre-filled — grant is
+        one mint away.</span></li>
+      <li><span><strong>Fail closed, verify pinned.</strong> Unmapped tools are denied by
+        default; every verdict is read at a pinned block and reported with it. No permission
+        database — the chain is the policy store.</span></li>
+      <li><span><strong>Honest about its boundary.</strong> On-chain targets enforce
+        themselves; credentialed upstreams are protected by keeping credentials out of the
+        agent's hands; ambient resources need OS isolation — the
+        <a href="https://github.com/kofujimura/tctc-mcp/blob/main/docs/GATE_SPEC.md" target="_blank" rel="noreferrer">spec</a>
+        says which is which, plainly.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section id="lineage">
   <div class="wrap">
     <div class="kicker">Lineage</div>
     <h2>Twenty-seven years of tickets controlling tickets</h2>
@@ -490,7 +523,7 @@
   </div>
 </section>
 
-<section>
+<section class="alt">
   <div class="wrap">
     <div class="kicker">Build with it</div>
     <h2>Everything is open</h2>
@@ -510,6 +543,10 @@
       <a class="linkcard" href="https://tctc-mcp.vercel.app/" target="_blank" rel="noreferrer">
         <div class="t">TCTC Dashboard</div>
         <div class="d">Live role manager — inspect, grant, revoke, deploy</div>
+      </a>
+      <a class="linkcard" href="https://github.com/kofujimura/tctc-mcp/tree/main/gate" target="_blank" rel="noreferrer">
+        <div class="t">tctc-gate</div>
+        <div class="d">Token-gate any existing MCP server — no modification</div>
       </a>
       <a class="linkcard" href="https://github.com/kofujimura/tctc-skills" target="_blank" rel="noreferrer">
         <div class="t">tctc-skills</div>
