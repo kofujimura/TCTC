@@ -148,6 +148,29 @@
   .layers .l3 { --ring: #4f8ff7; }
   .layers .l4 { --ring: #9b8cf7; }
 
+  /* onion interactivity: hovering a ring lights the ring, its label, and its card
+     (and hovering a card lights its ring) — pure CSS via :has() */
+  .olayer { cursor: pointer; }
+  .olayer circle, .olayer text { transition: stroke-width .15s ease, filter .15s ease, font-size .15s ease; }
+  .layers li { transition: transform .15s ease, border-color .15s ease, background .15s ease; }
+  .onion-grid:has(.o1:hover) .layers .l1,
+  .onion-grid:has(.o2:hover) .layers .l2,
+  .onion-grid:has(.o3:hover) .layers .l3,
+  .onion-grid:has(.o4:hover) .layers .l4,
+  .layers li:hover {
+    border-color: var(--ring);
+    background: var(--panel-2);
+    transform: translateX(6px);
+  }
+  .o1:hover circle, .onion-grid:has(.layers .l1:hover) .o1 circle,
+  .o2:hover circle, .onion-grid:has(.layers .l2:hover) .o2 circle,
+  .o3:hover circle, .onion-grid:has(.layers .l3:hover) .o3 circle,
+  .o4:hover circle, .onion-grid:has(.layers .l4:hover) .o4 circle {
+    stroke-width: 3.4;
+    filter: drop-shadow(0 0 6px rgba(255,255,255,.18));
+  }
+  .o4:hover circle, .onion-grid:has(.layers .l4:hover) .o4 circle { stroke-dasharray: none; }
+
   /* agent section */
   .split {
     display: grid; grid-template-columns: 1fr 1fr; gap: 56px;
@@ -360,8 +383,11 @@
     <h2>Tokens controlling tokens, all the way down</h2>
     <p class="lead">
       TCTC is recursive: the circulation of a token is controlled by another token, whose
-      circulation can itself be token-controlled. The recursion bottoms out at the innermost
-      layer — a single issuer key. Trust flows outward, and can be cut at any layer.
+      circulation can itself be token-controlled. The recursion bottoms out at an innermost
+      layer where issuance is governed by a plain <code>onlyOwner</code>. But the root of
+      trust is not the issuer — <strong>it is the contract</strong>: a target names the
+      certificate contracts it accepts, a wallet records the ticket contracts it trusts,
+      and if a contract's circulation rules are sound, it doesn't matter who mints under it.
     </p>
     <div class="onion-grid">
       <svg class="onion-svg" viewBox="0 0 460 460" role="img" aria-label="Onion model: issuer at the center, then control tokens, then roles on target contracts, then holders">
@@ -371,27 +397,39 @@
             <stop offset="100%" stop-color="#f0b429" stop-opacity="0"/>
           </radialGradient>
         </defs>
-        <circle cx="230" cy="230" r="216" fill="#151b26" stroke="#9b8cf7" stroke-width="1.6" stroke-dasharray="3 5"/>
-        <circle cx="230" cy="230" r="160" fill="#1a2130" stroke="#4f8ff7" stroke-width="1.6"/>
-        <circle cx="230" cy="230" r="106" fill="#20293a" stroke="#2ecc8f" stroke-width="1.6"/>
-        <circle cx="230" cy="230" r="54"  fill="url(#glow)"/>
-        <circle cx="230" cy="230" r="54"  fill="#2a2417" stroke="#f0b429" stroke-width="1.8"/>
-        <text x="230" y="224" text-anchor="middle" font-size="15" font-weight="700" fill="#f0b429">issuer</text>
-        <text x="230" y="243" text-anchor="middle" font-size="11" fill="#c9a13b">onlyOwner</text>
-        <text x="230" y="146" text-anchor="middle" font-size="13.5" font-weight="600" fill="#2ecc8f" paint-order="stroke" stroke="#20293a" stroke-width="8" stroke-linejoin="round">control tokens</text>
-        <text x="230" y="97"  text-anchor="middle" font-size="13.5" font-weight="600" fill="#7db2ff" paint-order="stroke" stroke="#1a2130" stroke-width="8" stroke-linejoin="round">roles on target contracts</text>
-        <text x="230" y="40"  text-anchor="middle" font-size="13.5" font-weight="600" fill="#b7abfa" paint-order="stroke" stroke="#151b26" stroke-width="8" stroke-linejoin="round">holders — humans &amp; AI agents</text>
+        <g class="olayer o4">
+          <circle cx="230" cy="230" r="216" fill="#151b26" stroke="#9b8cf7" stroke-width="1.6" stroke-dasharray="3 5"/>
+          <text x="230" y="40" text-anchor="middle" font-size="13.5" font-weight="600" fill="#b7abfa" paint-order="stroke" stroke="#151b26" stroke-width="8" stroke-linejoin="round">holders — humans &amp; AI agents</text>
+        </g>
+        <g class="olayer o3">
+          <circle cx="230" cy="230" r="160" fill="#1a2130" stroke="#4f8ff7" stroke-width="1.6"/>
+          <text x="230" y="97" text-anchor="middle" font-size="13.5" font-weight="600" fill="#7db2ff" paint-order="stroke" stroke="#1a2130" stroke-width="8" stroke-linejoin="round">roles on target contracts</text>
+        </g>
+        <g class="olayer o2">
+          <circle cx="230" cy="230" r="106" fill="#20293a" stroke="#2ecc8f" stroke-width="1.6"/>
+          <text x="230" y="146" text-anchor="middle" font-size="13.5" font-weight="600" fill="#2ecc8f" paint-order="stroke" stroke="#20293a" stroke-width="8" stroke-linejoin="round">control tokens</text>
+        </g>
+        <g class="olayer o1">
+          <circle cx="230" cy="230" r="54" fill="url(#glow)" stroke="none"/>
+          <circle cx="230" cy="230" r="54" fill="#2a2417" stroke="#f0b429" stroke-width="1.8"/>
+          <text x="230" y="224" text-anchor="middle" font-size="15" font-weight="700" fill="#f0b429">issuer</text>
+          <text x="230" y="243" text-anchor="middle" font-size="11" fill="#c9a13b">onlyOwner</text>
+        </g>
       </svg>
       <ol class="layers">
-        <li class="l1"><h4>Issuer — the root of trust</h4>
-          <p>The innermost layer: certificate issuance governed by <code>onlyOwner</code>
-             alone. A single key (or a multisig) that can always mint — and always burn.</p></li>
-        <li class="l2"><h4>Control tokens — the certificates</h4>
-          <p>Soulbound ERC-1155/721 tokens representing qualifications: MinterCert,
-             MemberPass, an expiring contractor badge. One collection can serve many targets.</p></li>
+        <li class="l1"><h4>Issuer — where the recursion ends</h4>
+          <p>The innermost layer, mechanically: certificate issuance governed by
+             <code>onlyOwner</code> — a key or a multisig that can mint and burn. An
+             operator of the collection, not the thing anyone is asked to trust.</p></li>
+        <li class="l2"><h4>Control tokens — the root of trust</h4>
+          <p>What verifiers actually trust: the certificate <em>contract</em> and its
+             published circulation rules — soulbound, issuer-burnable, expirable. Trust
+             the contract, and it doesn't matter who issues under it. One collection
+             can serve many targets.</p></li>
         <li class="l3"><h4>Roles on target contracts</h4>
-          <p>Targets declare which certificates satisfy which role (introspectable via
-             ERC-165). OR within a role, AND across modifiers — policy lives in the target.</p></li>
+          <p>Trust is pinned to contract addresses: each target declares which certificate
+             contracts satisfy which role (introspectable via ERC-165). OR within a role,
+             AND across modifiers — policy lives in the target.</p></li>
         <li class="l4"><h4>Holders — humans and AI agents</h4>
           <p>The outermost layer: whoever holds the token can act — an employee, a partner,
              an autonomous agent — until expiry or the issuer's burn says otherwise.</p></li>
